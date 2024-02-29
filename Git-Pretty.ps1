@@ -10,14 +10,38 @@ param (
 $repoStatus = Test-Git-Repo
 
 if ($repoStatus -match "false") {
-  echo "Not a Git repository. Exiting."
+  Write-Host "Not a Git repository. Exiting."
   exit
 }
 
 # Detemine files to include
 $excludeFiles += ".gitignore"
 
-$filesToFormat = git ls-files | Where-Object { $_ -notin $excludeFiles -and ($includeFiles.Count -eq 0 -or $_ -in $includeFiles) }
+$gitFiles = git ls-files
+
+$filesToFormat = @()
+
+
+foreach ($file in $gitFiles) {
+  $excludedSomething = $false
+  foreach ($excludedFile in $excludeFiles) {
+    if ($file -match $excludedFile) {
+      $excludedSomething = $true
+    }
+  }
+  if ($excludedSomething) {
+    continue
+  }
+  if ($includeFiles.Count -gt 0) {
+    foreach ($includedFile in $includeFiles) {
+      if ($file -match $includedFile) {
+        $filesToFormat += $file
+      }
+    }
+  } else {
+    $filesToFormat += $file
+  }
+}
 
 # Print the formatted files
 foreach ($file in $filesToFormat) {
