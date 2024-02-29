@@ -10,9 +10,19 @@ Nice way of getting all the contents of a git repository.
 - Not recommended for large projects.
 - Nice for getting context for use with LLMs.
 
+### Parameters
+`includeFiles`: if specified, only these files will be included
+`excludeFiles`: Git-Pretty will ignore all files listed here, .gitignore files are exluded by default
+
 ### Usage
 ```
 Git-Pretty
+```
+```
+Git-Pretty -includeFiles .go # This will include all golang files
+```
+```
+Git-Pretty -excludeFiles README.md # This will exclude the README.md from the output
 ```
 
 Can easily be combined with other cmdlets, such as
